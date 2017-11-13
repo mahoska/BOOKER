@@ -79,7 +79,19 @@ class Event extends Controller
         return false;
     } 
     
-    
+    /*
+    function insert event in database
+    @param <Array> $params -
+        associative array for insert
+            (user_id,room_id,description,
+            start_event, end_event, day_event, is_repeat, 
+            recur_period and duration)
+    @return <Array> $result -
+        associative array(status responce and 
+        if successful - data about added records -
+            count added records and
+            information for event - start, end
+    */  
     public function postEvent($params)
     {
         if(count($params) != 9)
@@ -256,7 +268,16 @@ class Event extends Controller
             }
         }
     }
-    
+
+    /*
+        function that returns information about booking 
+        a specific room for a cpecified month
+        @param <Array> $params -
+            array that contains id_room, number month
+        @return <Array> $result - 
+            associative array with status answer 
+            and assoc array with time events and id
+    */
     public function getDataEvent($params)
     {
         if(count($params) != 3)
@@ -264,7 +285,7 @@ class Event extends Controller
 
         $cur_month = $params[1];
         $next_month = (new DateTime())->setTimestamp($cur_month)->modify('+1 month')->getTimestamp();
-        $next_month_test  = strtotime('+1 month',$cur_month);
+        
         $model = new EventModel();
         $data =  $model->selectAssoc(
                         ['start_event', 'end_event', 'id', 'start_event_format', 'end_event_format'],     
@@ -318,6 +339,14 @@ class Event extends Controller
         return ['status'=>200, 'data'=>$events];
     }
     
+    
+    /*
+    function that returns information about event for it's id
+    @param <Array> $params - 
+        array whose zero element - id event
+    @return <Array> $result
+        -assoc array with data event
+     */
     public function getItemEvent($params)
     {   
         if(count($params) != 1 || !(int)$params[0]>0)
@@ -344,7 +373,16 @@ class Event extends Controller
                 );
         }
     }
-    
+
+    /*
+    function deleted event
+    @param <Array> $params - 
+        array that contains information - 
+        id event and flag recursive flag(1 or 0)
+    @return <Array> $result - 
+        accos array with status answer 
+        and if succes - count deleted records
+     */
     public function deleteEvent($params)
     {
          if(count($params) == 2 && (int)$params[0]>0 && ((int)$params[1] == 1 || (int)$params[1] == 0))
@@ -517,7 +555,21 @@ class Event extends Controller
             }//is recurse        
         }//is valid
     }
-       
+
+    /*
+    function update event
+    @param <Integer> $id  - id event
+    @param <Integer> $start - start event in format timestamp
+    @param <Integer> $end - end event timestamp
+    @param <Integer> $day - day event timestamp
+    @param <Integer> $room_id
+    @param <String> $description event
+    @param <Integer> $user_id - who booked room
+    @return <Array> $result - 
+        assoc array (status responce and info about the affected events - 
+        whether the update was successful(1 or 0)
+        and start and end  source event
+     */
     public function updateItemEvent($id, $start, $end, $day, $room_id, $description, $user_id)
     {
         $eventCheck = ['start_event'=> $start,
@@ -594,7 +646,10 @@ class Event extends Controller
             ];
         }
     }
-    
+
+    /*
+     * procurement of a function to return all information on all events
+     */
     public function getAllEvent()
     {
         $model = new EventModel();

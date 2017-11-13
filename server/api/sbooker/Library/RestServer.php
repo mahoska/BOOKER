@@ -101,9 +101,14 @@ class RestServer
         }
         if($this->statusResponse != 406 && $this->statusResponse != 400)
         {
-           $data =  $this->setMethod($this->className,$this->method, $this->params);
-           $responseContent = ($this->setResponse($data) && $this->statusResponse == 200)? $this->setResponse($data) : null ;
-           $this->getResponse($responseContent);
+            $data =  $this->setMethod(
+                $this->className,
+                $this->method, 
+                $this->params
+            );
+            $responseContent = ($this->setResponse($data) && 
+                 $this->statusResponse == 200) ?  $this->setResponse($data) : null ;
+                $this->getResponse($responseContent);
         }
         else
             $this->getResponse();

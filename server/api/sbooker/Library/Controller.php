@@ -2,6 +2,12 @@
 
 abstract class Controller 
 { 
+    /*
+        function of forming  view, if client requests data if format html
+        /if required to expand the project/
+        @param <String> $view - name view
+        @param <Array> data for view
+    */ 
     public  function render($view, array $args = [])
     { 
         extract($args);
