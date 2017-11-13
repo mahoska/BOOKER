@@ -2,6 +2,11 @@
 
 class User  extends Controller
 {  
+    /*
+    function returns information about all users
+    @return <Array> $result - 
+        assoc array with adat users(id, fullname, email)
+     */
     public function getAllUser()
     {
         $model = new UserModel();
@@ -57,6 +62,14 @@ class User  extends Controller
         }
     }
         
+    /*
+    function insert user
+    @param <Array> $params - 
+        accos array with information for insert
+        (login, password, email, fullname)
+    @return <Array> $result - 
+        assoc array with status answer and if success - lastInsertId
+     */
     public function postUser($params)
     {
         if(count($params) != 5)
@@ -74,7 +87,16 @@ class User  extends Controller
        
         return $model->insert($params);
     }
-    
+
+    /*
+    function that update all data user or users active life
+    @param <Array> $params - 
+        if exists property - edit - $params contains all data user
+        else  login and password
+    @return <Array> $result - 
+        assoc array with data update or if that is authorization -
+        (fullname, status-hash and role)
+     */
     public function putUser($params)
     {
         $model = new UserModel();
@@ -139,19 +161,23 @@ class User  extends Controller
             {
                 //getClientId
                 return  $model->selectAssoc(
-                                            ['status', 'fullname', "roleBooker.name as role"],
-                                            false, 
-                                            "JOIN roleBooker ON userBooker.role_id = roleBooker.id",
-                                            ['login', 'password'], 
-                                            [
-                                                'login'=>$fparams['login'],
-                                                'password'=>$fparams['password']
-                                            ]
+                    ['status', 'fullname', "roleBooker.name as role"],
+                    false, 
+                    "JOIN roleBooker ON userBooker.role_id = roleBooker.id",
+                    ['login', 'password'], 
+                    [
+                        'login'=>$fparams['login'],
+                        'password'=>$fparams['password']
+                    ]
                 );
             }
         }
     }
 
+    /*
+     * create unique hash
+     * @return <String> $hash
+     * */
     private function setHash()
     {
         $model = new UserModel();
@@ -167,7 +193,11 @@ class User  extends Controller
         
         return md5($rand.$countUsers);
     }
-    
+
+    /*
+     * hash password for database
+     * @return <String> $hash
+     */
     private function getPasswordDb($password)
     {
         $pass = md5($password);
@@ -176,6 +206,11 @@ class User  extends Controller
         return md5($password.$str);
     }
     
+    /*
+    function delete user
+    @param <Array> $params - 
+        contain user id
+     */
     public function deleteUser($params  = false)
     {
         if(count($params) == 1 && (int)$params[0]>0)
