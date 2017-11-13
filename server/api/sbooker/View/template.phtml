@@ -17,7 +17,17 @@
                       <ul>
                         <?php foreach($value as $vkey => $vvalue): ?>
                             <li>
+                                <?php if(is_array($vvalue)):?>
+                                <ul>
+                                    <?php foreach($vvalue as $k => $v):?>
+                                    <li>
+                                        <?=$v ?>
+                                    </li>
+                                    <?php endforeach;?>
+                                </ul>
+                                <?php else:?> 
                                 <?=$vvalue?>
+                                <?php endif;?>
                             </li>
                         <?php endforeach;?>
                       </ul>
