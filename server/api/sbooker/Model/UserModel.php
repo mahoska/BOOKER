@@ -7,7 +7,11 @@ class UserModel extends Model
         parent::__construct();
         $this->tableName = 'userBooker';
     }
-    
+
+    /*
+    function that returns count all users
+    @return <Integer> $countUser
+    */ 
     public function countUser()
     {
         try{
@@ -17,7 +21,18 @@ class UserModel extends Model
             return ['status'=>500, 'clientCode'=>'0006'];
         } 
     } 
-    
+
+
+    /*
+    methods that starts a user edit request
+    @param <Array> $params - 
+        assoc array with data to update 
+    @param <Boolean> $ifPass - 
+        flag signaling the need to update the password
+    @return <Array> $result - 
+        assoc array with status update and 
+        if success count affected row
+     */
     public function updateUser($params, $ifPass)
     {
         try{
