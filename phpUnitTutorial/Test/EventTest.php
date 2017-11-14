@@ -213,10 +213,11 @@ class EventTest extends PHPUnit_Framework_TestCase
         $mod = ['-1 day', '+0 day','+1 day'];
         $insId = [];
         for($i =0; $i<3; $i++){
-             $h = (new DateTime())->format('H');
-            $start = (new DateTime())->modify($mod[$i])->setTime(8,0)->getTimestamp();
+            $h = (new DateTime())->format('H');
+            
+            $start = (new DateTime('2017-2-2'))->modify($mod[$i])->setTime($h,0)->getTimestamp();
             $startDate = (new DateTime())->setTimestamp($start);
-            $end = (new DateTime())->setTimestamp($start)->setTime(8,30)->getTimestamp();
+            $end = (new DateTime('2017-2-2'))->modify($mod[$i])->setTime($h,30)->getTimestamp();
             $startFormat = $startDate->format('d.m.y H:i:s');
             $endFormat =  (new DateTime())->setTimestamp($end)->format('d.m.y H:i:s');
             
@@ -269,8 +270,9 @@ class EventTest extends PHPUnit_Framework_TestCase
         '( `fullname`, `login`, `password`, `email`, `role_id`, `status`, `time_life`) VALUES '.
         '("sam", "samlog", '.$passwordDb.', "sam@gmail.com", 1, '.$status.', '.$timeLifesa.')');
         $userId = $this->helper->getPdo()->lastInsertId();
+
         $h = (new DateTime())->format('H');
-        $start = (new DateTime())->modify('+9 month')->setTime($h,0)->getTimestamp();
+        $start = (new DateTime())->setTime($h,0)->getTimestamp();
         $startDate = (new DateTime())->setTimestamp($start)->getTimestamp();
         $end = (new DateTime())->setTimestamp($start)->setTime($h,30)->getTimestamp();
 
@@ -298,8 +300,8 @@ class EventTest extends PHPUnit_Framework_TestCase
     }
     
 
-
-    /*
+/*
+   //this method is private 
     public function testcheckEvent()
     {
         $this->helper->executeQuery('INSERT INTO roomBooker (name) VALUES ("testRoom")');
@@ -324,23 +326,23 @@ class EventTest extends PHPUnit_Framework_TestCase
         '( `fullname`, `login`, `password`, `email`, `role_id`, `status`, `time_life`) VALUES '.
         '("sam", "samlog", '.$passwordDb.', "sam@gmail.com", 1, '.$status.', '.$timeLifesa.')');
         $userId = $this->helper->getPdo()->lastInsertId();
-
-        $start = (new DateTime())->modify('+6 monthes')->setTime(8,0)->getTimestamp();
+         $h = (new DateTime())->format('H');
+        $start = (new DateTime())->setTime($h,0)->getTimestamp();
         $startDate = (new DateTime())->setTimestamp($start);
-        $end = (new DateTime())->setTimestamp($start)->setTime(8,30)->getTimestamp();
-        $startFormat = $start->format('d.m.y H:i:s');
-        $endFormat = $end->format('d.m.y H:i:s');
-        
+        $end = (new DateTime())->setTimestamp($start)->setTime($h,30)->getTimestamp();
+        $startFormat = $startDate->format('d.m.y H:i:s');
+        $endFormat =  (new DateTime())->setTimestamp($end)->format('d.m.y H:i:s');
+               
         $this->helper->executeQuery('INSERT INTO eventBooker 
          ( `user_id`, `room_id`, `description`, `start_event`, `start_event_format`, 
          `end_event`, `end_event_format`, `data_create`, `parent_event_id`, `is_repeat`) VALUES
-         ('.$userId.', '.$roomId.', "testing event", '.$start.', '.$startFormat.', '.$end.', '.$endFormat.', '. $startDate.', NULL, 0)');
+         ('.$userId.', '.$roomId.', "testing event", '.$start.', '.$startFormat.', '.$end.', '.$endFormat.', '. ($startDate->getTimestamp()).', NULL, 0)');
         $eventId = $this->helper->getPdo()->lastInsertId();
 
         $res = $this->objEventController->checkEvent(
             ['start_event'=>$start,
             'end_event'=>$end,
-            'day_event'=>$startDate,
+            'day_event'=>($startDate->getTimestamp()),
             'room_id'=>$roomId
            ]
         );
@@ -350,9 +352,9 @@ class EventTest extends PHPUnit_Framework_TestCase
         $this->helper->executeQuery('DELETE FROM roomBooker WHERE id = '.$roomId);
         $this->helper->executeQuery('DELETE FROM eventBooker WHERE id = '.$eventId);
     }
-    */
-
-    /*
+    
+ */
+    
     public function testupdateItemEvent()
     {
         $this->helper->executeQuery('INSERT INTO roomBooker (name) VALUES ("testRoom")');
@@ -378,27 +380,28 @@ class EventTest extends PHPUnit_Framework_TestCase
         '("sam", "samlog", '.$passwordDb.', "sam@gmail.com", 1, '.$status.', '.$timeLifesa.')');
         $userId = $this->helper->getPdo()->lastInsertId();
 
-        $start = (new DateTime())->modify('+6 monthes')->setTime(8,0)->getTimestamp();
+        $h = (new DateTime())->format('H');
+        $start = (new DateTime())->setTime($h,0)->getTimestamp();
         $startDate = (new DateTime())->setTimestamp($start);
-        $end = (new DateTime())->setTimestamp($start)->setTime(8,30)->getTimestamp();
+        $end = (new DateTime())->setTimestamp($start)->setTime($h,30)->getTimestamp();
         
         $this->helper->executeQuery('INSERT INTO eventBooker 
          ( `user_id`, `room_id`, `description`, `start_event`, `start_event_format`, 
          `end_event`, `end_event_format`, `data_create`, `parent_event_id`, `is_repeat`) VALUES
-         ('.$userId.', '.$roomId.', "testing event", '.$start.', '.$startFormat.', '.$end.', '.$endFormat.', '. $startDate.', NULL, 0)');
+         ('.$userId.', '.$roomId.', "testing event", '.$start.', '.$startFormat.', '.$end.', '.$endFormat.', '. ($startDate->getTimestamp()).', NULL, 0)');
         $eventId = $this->helper->getPdo()->lastInsertId();
 
         $res = $this->objEventController->updateItemEvent(
-            $eventId, $start, $end, $startDate, $roomId, 'new description', $userId
+            $eventId, $start, $end, ($startDate->getTimestamp()), $roomId, 'new description', $userId
         );
         $this->assertInternalType('array', $res);
-        $this->assertEquals($res['data']['count']==1);
+        $this->assertTrue($res['data']['count']==1);
    
         $this->helper->executeQuery('DELETE FROM userBooker WHERE id = '.$userId);
         $this->helper->executeQuery('DELETE FROM roomBooker WHERE id = '.$roomId);
         $this->helper->executeQuery('DELETE FROM eventBooker WHERE id = '.$eventId);
     }
-    */
+    
 
 }
 
