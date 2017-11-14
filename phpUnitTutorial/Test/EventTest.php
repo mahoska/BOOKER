@@ -51,7 +51,7 @@ class EventTest extends PHPUnit_Framework_TestCase
         '("sam", "samlog", '.$passwordDb.', "sam@gmail.com", 1, '.$status.', '.$timeLifesa.')');
         $userId = $this->helper->getPdo()->lastInsertId();
         $h = (new DateTime())->format('H');
-        $start = (new DateTime())->modify('+7 month')->setTime($h,0)->getTimestamp();
+        $start = (new DateTime())->setTime($h,0)->getTimestamp();
         $startDate = (new DateTime())->setTimestamp($start);
         $end = (new DateTime())->setTimestamp($start)->setTime($h,30)->getTimestamp();
         $startFormat = $startDate->format('d.m.y H:i:s');
@@ -160,7 +160,7 @@ class EventTest extends PHPUnit_Framework_TestCase
         '("sam", "samlog", '.$passwordDb.', "sam@gmail.com", 1, '.$status.', '.$timeLifesa.')');
         $userId = $this->helper->getPdo()->lastInsertId();
         $h = (new DateTime())->format('H');
-        $start = (new DateTime())->modify('+8 month')->setTime($h,0)->getTimestamp();
+        $start = (new DateTime())->setTime($h,0)->getTimestamp();
         $startDate = (new DateTime())->setTimestamp($start);
         $end = (new DateTime())->setTimestamp($start)->setTime($h,30)->getTimestamp();
         $startFormat = $startDate->format('d.m.y H:i:s');
@@ -244,7 +244,7 @@ class EventTest extends PHPUnit_Framework_TestCase
     }
     
 
-    /*
+    
     public function testpostEvent()
     {
         $this->helper->executeQuery('INSERT INTO roomBooker (name) VALUES ("testRoom")');
@@ -269,10 +269,10 @@ class EventTest extends PHPUnit_Framework_TestCase
         '( `fullname`, `login`, `password`, `email`, `role_id`, `status`, `time_life`) VALUES '.
         '("sam", "samlog", '.$passwordDb.', "sam@gmail.com", 1, '.$status.', '.$timeLifesa.')');
         $userId = $this->helper->getPdo()->lastInsertId();
-
-        $start = (new DateTime())->modify('+6 monthes')->setTime(8,0)->getTimestamp();
-        $startDate = (new DateTime())->setTimestamp($start);
-        $end = (new DateTime())->setTimestamp($start)->setTime(8,30)->getTimestamp();
+        $h = (new DateTime())->format('H');
+        $start = (new DateTime())->modify('+9 month')->setTime($h,0)->getTimestamp();
+        $startDate = (new DateTime())->setTimestamp($start)->getTimestamp();
+        $end = (new DateTime())->setTimestamp($start)->setTime($h,30)->getTimestamp();
 
         $res = $this->objEventController->postEvent([
            'user_id'=>$userId,
@@ -289,14 +289,14 @@ class EventTest extends PHPUnit_Framework_TestCase
         $eventId = $this->helper->getPdo()->lastInsertId();   
 
         $this->assertInternalType('array', $res);  
-        $this->assertEquals($res['data']['count']==1);  
+        $this->assertEquals($res['data']['count']==1,true);  
 
 
         $this->helper->executeQuery('DELETE FROM userBooker WHERE id = '.$userId);
         $this->helper->executeQuery('DELETE FROM roomBooker WHERE id = '.$roomId);
         $this->helper->executeQuery('DELETE FROM eventBooker WHERE id = '.$eventId);
     }
-    */
+    
 
 
     /*
